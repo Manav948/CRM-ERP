@@ -1,6 +1,6 @@
-# NexusERP & CRM — Enterprise Operations Suite
+#  CRM + ERP — Enterprise Operations Suite
 
-NexusERP is a unified full-stack Enterprise Resource Planning (ERP) and Customer Relationship Management (CRM) platform. It streamlines customer lifecycle management, inventory cataloging, stock audit logging, and automated sales delivery order processing.
+CRM + ERP is a unified full-stack Enterprise Resource Planning (ERP) and Customer Relationship Management (CRM) platform. It streamlines customer lifecycle management, inventory cataloging, stock audit logging, and automated sales delivery order processing.
 
 ---
 
