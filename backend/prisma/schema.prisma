@@ -1,0 +1,173 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  Admin
+  Sales
+  Warehouse
+  Accounts
+}
+
+enum CustomerType {
+  Retail
+  Wholesale
+  Distributor
+}
+
+enum CustomerStatus {
+  Lead
+  Active
+  Inactive
+}
+
+enum MovementType {
+  IN
+  OUT
+}
+
+enum ChallanStatus {
+  Draft
+  Confirmed
+  Cancelled
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(Sales)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customers Customer[]
+  notes     CustomerNote[]
+  products  Product[]
+  stockLogs StockLog[]
+  challans  Challan[]
+
+  @@map("users")
+}
+
+model Customer {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  mobile       String
+  email        String?
+  businessName String
+  gstNumber    String?
+  customerType CustomerType   @default(Retail)
+  address      String
+  status       CustomerStatus @default(Lead)
+  followUpDate DateTime?
+
+  createdById String? @db.ObjectId
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+
+  notes    CustomerNote[]
+  challans Challan[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("customers")
+}
+
+model CustomerNote {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  text       String
+  customerId String   @db.ObjectId
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  createdById String @db.ObjectId
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("customer_notes")
+}
+
+model Product {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  sku           String @unique
+  category      String
+  unitPrice     Float
+  currentStock  Int    @default(0)
+  minStockAlert Int    @default(5)
+  location      String @default("Main Warehouse")
+
+  createdById String? @db.ObjectId
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+
+  stockLogs    StockLog[]
+  challanItems ChallanItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("products")
+}
+
+model StockLog {
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  productId       String       @db.ObjectId
+  product         Product      @relation(fields: [productId], references: [id])
+  quantityChanged Int
+  movementType    MovementType
+  reason          String
+
+  createdById String @db.ObjectId
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("stock_logs")
+}
+
+model Challan {
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  challanNumber    String        @unique
+  customerId       String        @db.ObjectId
+  customer         Customer      @relation(fields: [customerId], references: [id])
+  customerName     String
+  customerMobile   String
+  customerBusiness String
+  customerAddress  String
+  status           ChallanStatus @default(Draft)
+  totalQuantity    Int           @default(0)
+  grandTotal       Float         @default(0)
+
+  createdById String @db.ObjectId
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  items ChallanItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("challans")
+}
+
+model ChallanItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  challanId String  @db.ObjectId
+  challan   Challan @relation(fields: [challanId], references: [id])
+
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+
+  sku         String
+  name        String
+  unitPrice   Float
+  quantity    Int
+  totalAmount Float
+
+  @@map("challan_items")
+}
