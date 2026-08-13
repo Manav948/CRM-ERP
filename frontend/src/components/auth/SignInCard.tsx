@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '../../context/AuthContext';
 import { useLoginMutation } from '../../hooks';
-import { Lock, Mail, ArrowRight, Loader2, X, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Loader2, X } from 'lucide-react';
 
 interface SignInCardProps {
   onClose?: () => void;
@@ -38,15 +38,14 @@ export const SignInCard: React.FC<SignInCardProps> = ({ onClose, onSwitchToSignU
 
   return (
     <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden relative z-10 font-sans text-zinc-900 select-none">
-   
       <div className="px-8 pt-8 pb-6 border-b border-zinc-100 bg-zinc-50/50 flex justify-between items-start">
         <div>
           <div className="flex items-center gap-2.5 mb-3">
             <div className="w-8 h-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-extrabold text-sm shadow-xs">
-              N
+              C
             </div>
             <span className="font-bold text-base tracking-tight text-zinc-950">
-              Nexus<span className="text-zinc-500 font-normal">ERP</span>
+              CRM <span className="text-zinc-500 font-normal">Project</span>
             </span>
           </div>
           <h2 className="text-xl font-extrabold text-zinc-950 tracking-tight">Sign In</h2>
@@ -118,7 +117,6 @@ export const SignInCard: React.FC<SignInCardProps> = ({ onClose, onSwitchToSignU
         </button>
       </form>
 
-     
       {onSwitchToSignUp && (
         <div className="px-8 py-4 bg-zinc-50 border-t border-zinc-100 text-center text-xs text-zinc-500">
           Need a staff account?{' '}

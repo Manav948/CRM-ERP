@@ -43,15 +43,14 @@ export const SignUpCard: React.FC<SignUpCardProps> = ({ onClose, onSwitchToSignI
 
   return (
     <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden relative z-10 font-sans text-zinc-900 select-none">
-    
       <div className="px-8 pt-8 pb-6 border-b border-zinc-100 bg-zinc-50/50 flex justify-between items-start">
         <div>
           <div className="flex items-center gap-2.5 mb-3">
             <div className="w-8 h-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-extrabold text-sm shadow-xs">
-              N
+              C
             </div>
             <span className="font-bold text-base tracking-tight text-zinc-950">
-              Nexus<span className="text-zinc-500 font-normal">ERP</span>
+              CRM <span className="text-zinc-500 font-normal">Project</span>
             </span>
           </div>
           <h2 className="text-xl font-extrabold text-zinc-950 tracking-tight">Create Staff Account</h2>
@@ -67,7 +66,6 @@ export const SignUpCard: React.FC<SignUpCardProps> = ({ onClose, onSwitchToSignI
         )}
       </div>
 
-  
       <form onSubmit={handleSubmit} className="p-8 space-y-4 text-xs">
         {errorMsg && (
           <div className="p-3 rounded-xl bg-zinc-950 text-white text-xs font-medium border border-zinc-800 animate-in fade-in">
