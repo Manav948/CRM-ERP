@@ -1,6 +1,22 @@
 # NexusERP & CRM — Enterprise Operations Suite
 
-CRM + ERP is a unified full-stack Enterprise Resource Planning (ERP) and Customer Relationship Management (CRM) platform. It streamlines customer lifecycle management, inventory cataloging, stock audit logging, and automated sales delivery order processing.
+> **Live Production Deployment**: [https://crm-erp-sigma.vercel.app](https://crm-erp-sigma.vercel.app)  
+
+> **Project Metadata Information**  
+> - **Platform Type**: Full-Stack Enterprise ERP & CRM Operations Suite  
+> - **Live App URL**: [https://crm-erp-sigma.vercel.app](https://crm-erp-sigma.vercel.app)  
+> - **Author**: Manav Patel  
+> - **Frontend**: React 19, TypeScript, Vite, Tailwind CSS v4, TanStack Query  
+> - **Backend**: Node.js, Express.js, TypeScript, Zod Validation, JWT Auth  
+> - **Database**: Prisma ORM v6 connected natively to MongoDB Atlas  
+> - **Security Model**: Role-Based Access Control (RBAC: Admin, Sales, Warehouse, Accounts)  
+> - **Deployment Spec**: Vercel Multi-Service Monorepo (`vercel.json`)  
+
+---
+
+## 📌 System Overview
+
+NexusERP is a unified full-stack Enterprise Resource Planning (ERP) and Customer Relationship Management (CRM) platform. It streamlines customer lifecycle management, inventory cataloging, stock audit logging, and automated sales delivery order processing.
 
 ---
 
@@ -9,6 +25,7 @@ CRM + ERP is a unified full-stack Enterprise Resource Planning (ERP) and Custome
 ```text
 +-----------------------------------------------------------------------------+
 |                         React 19 + Vite Frontend                            |
+|             (Live App: https://crm-erp-sigma.vercel.app)                    |
 |    [ Executive Dashboard ]  [ Customer CRM ]  [ Inventory & Challans ]     |
 +-----------------------------------------------------------------------------+
                                        |
