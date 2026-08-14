@@ -1,9 +1,9 @@
 import type { Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../../config/prisma';
-import type { AuthRequest } from '../../middleware/authMiddleware';
-import { registerUserSchema } from '../../utils/validators';
+import { prisma } from '../../config/prisma.js';
+import type { AuthRequest } from '../../middleware/authMiddleware.js';
+import { registerUserSchema } from '../../utils/validators.js';
 
 const generateToken = (id: string, role: string) => {
   const secret = process.env.JWT_SECRET || 'secret12345';
@@ -19,15 +19,10 @@ export const registerUser = async (
     const validatedData = registerUserSchema.parse(req.body);
     const emailLower = validatedData.email.toLowerCase();
 
-    // 1. Check if user already exists in DB
-    let userExists = null;
-    try {
-      userExists = await prisma.user.findUnique({
-        where: { email: emailLower },
-      });
-    } catch (dbErr) {
-      console.warn('[Register] DB read error, continuing with user creation:', dbErr);
-    }
+    // 1. Check if user already exists in MongoDB Atlas
+    const userExists = await prisma.user.findUnique({
+      where: { email: emailLower },
+    });
 
     if (userExists) {
       return res.status(400).json({
@@ -36,40 +31,30 @@ export const registerUser = async (
       });
     }
 
+    // 2. Hash password & create user in MongoDB Atlas
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(validatedData.password, salt);
 
-    let newUser = null;
-    try {
-      newUser = await prisma.user.create({
-        data: {
-          name: validatedData.name,
-          email: emailLower,
-          password: hashedPassword,
-          role: validatedData.role,
-        },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-          createdAt: true,
-        },
-      });
-    } catch (createErr) {
-      console.warn('[Register] DB create error, generating fallback registered user payload:', createErr);
-      newUser = {
-        id: `user-${Date.now()}`,
+    const newUser = await prisma.user.create({
+      data: {
         name: validatedData.name,
         email: emailLower,
+        password: hashedPassword,
         role: validatedData.role,
-        createdAt: new Date(),
-      };
-    }
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
 
+    // 3. Issue JWT Token
     const token = generateToken(newUser.id, newUser.role);
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       token,
       user: {
@@ -80,6 +65,6 @@ export const registerUser = async (
       },
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };

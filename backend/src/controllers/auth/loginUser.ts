@@ -1,103 +1,59 @@
 import type { Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../../config/prisma';
-import type { AuthRequest } from '../../middleware/authMiddleware';
-import { loginSchema } from '../../utils/validators';
+import { prisma } from '../../config/prisma.js';
+import type { AuthRequest } from '../../middleware/authMiddleware.js';
+import { loginSchema } from '../../utils/validators.js';
 
 const generateToken = (id: string, role: string) => {
   const secret = process.env.JWT_SECRET || 'secret12345';
   return jwt.sign({ id, role }, secret, { expiresIn: '30d' });
 };
 
-// Preset Demo Accounts for seamless one-click authentication
-const DEMO_USERS: Record<string, { id: string; name: string; email: string; pass: string; role: 'Admin' | 'Sales' | 'Warehouse' | 'Accounts' }> = {
-  'admin@example.com': {
-    id: 'demo-admin-id-1',
-    name: 'System Admin',
-    email: 'admin@example.com',
-    pass: 'admin123',
-    role: 'Admin',
-  },
-  'sales@example.com': {
-    id: 'demo-sales-id-2',
-    name: 'Sarah Sales Manager',
-    email: 'sales@example.com',
-    pass: 'sales123',
-    role: 'Sales',
-  },
-  'warehouse@example.com': {
-    id: 'demo-wh-id-3',
-    name: 'Walter Warehouse Keeper',
-    email: 'warehouse@example.com',
-    pass: 'wh123',
-    role: 'Warehouse',
-  },
-  'accounts@example.com': {
-    id: 'demo-accounts-id-4',
-    name: 'Alice Accounts Officer',
-    email: 'accounts@example.com',
-    pass: 'accounts123',
-    role: 'Accounts',
-  },
-};
-
 export const loginUser = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+): Promise<void | Response> => {
   try {
     const validatedData = loginSchema.parse(req.body);
     const emailLower = validatedData.email.toLowerCase();
 
-    // 1. Try querying Database
-    let dbUser = null;
-    try {
-      dbUser = await prisma.user.findUnique({
-        where: { email: emailLower },
+    // 1. Query MongoDB Atlas for user
+    const dbUser = await prisma.user.findUnique({
+      where: { email: emailLower },
+    });
+
+    if (!dbUser) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password',
       });
-    } catch (dbErr) {
-      console.warn('[Auth] Database connection issue, checking demo credentials fallback:', dbErr);
     }
 
-    if (dbUser && (await bcrypt.compare(validatedData.password, dbUser.password))) {
-      const token = generateToken(dbUser.id, dbUser.role);
-      res.json({
-        success: true,
-        token,
-        user: {
-          id: dbUser.id,
-          name: dbUser.name,
-          email: dbUser.email,
-          role: dbUser.role,
-        },
+    // 2. Validate hashed password
+    const isPasswordValid = await bcrypt.compare(validatedData.password, dbUser.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password',
       });
-      return;
     }
 
-    // 2. Demo User Fallback (Guarantees Sign-In always works)
-    const demoUser = DEMO_USERS[emailLower];
-    if (demoUser && validatedData.password === demoUser.pass) {
-      const token = generateToken(demoUser.id, demoUser.role);
-      res.json({
-        success: true,
-        token,
-        user: {
-          id: demoUser.id,
-          name: demoUser.name,
-          email: demoUser.email,
-          role: demoUser.role,
-        },
-      });
-      return;
-    }
+    // 3. Issue JWT Token
+    const token = generateToken(dbUser.id, dbUser.role);
 
-    res.status(401).json({
-      success: false,
-      message: 'Invalid email or password',
+    return res.json({
+      success: true,
+      token,
+      user: {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        role: dbUser.role,
+      },
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };

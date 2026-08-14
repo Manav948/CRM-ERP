@@ -17,13 +17,6 @@ interface JwtPayload {
   role: Role;
 }
 
-const DEMO_USERS_MAP: Record<string, { id: string; name: string; email: string; role: Role }> = {
-  'demo-admin-id-1': { id: 'demo-admin-id-1', name: 'System Admin', email: 'admin@example.com', role: 'Admin' },
-  'demo-sales-id-2': { id: 'demo-sales-id-2', name: 'Sarah Sales Manager', email: 'sales@example.com', role: 'Sales' },
-  'demo-wh-id-3': { id: 'demo-wh-id-3', name: 'Walter Warehouse Keeper', email: 'warehouse@example.com', role: 'Warehouse' },
-  'demo-accounts-id-4': { id: 'demo-accounts-id-4', name: 'Alice Accounts Officer', email: 'accounts@example.com', role: 'Accounts' },
-};
-
 export const protect = async (
   req: AuthRequest,
   res: Response,
@@ -40,25 +33,15 @@ export const protect = async (
       const jwtSecret = process.env.JWT_SECRET || 'secret12345';
       const decoded = jwt.verify(token as string, jwtSecret) as unknown as JwtPayload;
 
-      let user: { id: string; name: string; email: string; role: Role } | null = null;
-
-      try {
-        user = await prisma.user.findUnique({
-          where: { id: decoded.id },
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true,
-          },
-        });
-      } catch (dbErr) {
-        console.warn('[Auth Middleware] Database query failed, checking demo token map fallback');
-      }
-
-      if (!user && DEMO_USERS_MAP[decoded.id]) {
-        user = DEMO_USERS_MAP[decoded.id]!;
-      }
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      });
 
       if (!user) {
         return res.status(401).json({
