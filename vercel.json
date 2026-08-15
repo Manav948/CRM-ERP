@@ -1,8 +1,10 @@
 {
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/dist",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://crm-erp-iu6c.onrender.com/api/:path*"
+      "source": "/api/(.*)",
+      "destination": "https://crm-erp-iu6c.onrender.com/api/$1"
     },
     {
       "source": "/(.*)",
