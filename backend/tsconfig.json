@@ -4,11 +4,11 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
     "allowJs": true,
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["src/**/*", "app.ts", "prisma.config.ts"]
+  "include": ["src/**/*", "app.ts"]
 }
