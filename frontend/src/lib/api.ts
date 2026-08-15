@@ -3,7 +3,7 @@ import axios from 'axios';
 const getBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   if (import.meta.env.VITE_API_BASE_URL) return import.meta.env.VITE_API_BASE_URL;
-  if (import.meta.env.PROD) return '/api';
+  if (import.meta.env.PROD) return 'https://crm-erp-iu6c.onrender.com/api';
   return 'http://localhost:5000/api';
 };
 

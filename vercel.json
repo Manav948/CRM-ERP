@@ -1,28 +1,12 @@
 {
-  "services": {
-    "frontend": {
-      "root": "frontend",
-      "framework": "vite"
-    },
-    "backend": {
-      "root": "backend",
-      "entrypoint": "app.ts"
-    }
-  },
   "rewrites": [
     {
-      "source": "/api(/.*)?",
-      "destination": {
-        "type": "service",
-        "service": "backend"
-      }
+      "source": "/api/:path*",
+      "destination": "https://crm-erp-iu6c.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
-      "destination": {
-        "type": "service",
-        "service": "frontend"
-      }
+      "destination": "/index.html"
     }
   ]
 }

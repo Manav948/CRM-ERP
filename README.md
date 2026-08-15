@@ -1,16 +1,18 @@
 # NexusERP & CRM — Enterprise Operations Suite
 
-> **Live Production Deployment**: [https://crm-erp-sigma.vercel.app](https://crm-erp-sigma.vercel.app)  
+> **Live Production App (Frontend)**: [https://crm-erp-sigma.vercel.app](https://crm-erp-sigma.vercel.app)  
+> **Live API Backend (Render)**: [https://crm-erp-iu6c.onrender.com](https://crm-erp-iu6c.onrender.com)  
 
 > **Project Metadata Information**  
 > - **Platform Type**: Full-Stack Enterprise ERP & CRM Operations Suite  
-> - **Live App URL**: [https://crm-erp-sigma.vercel.app](https://crm-erp-sigma.vercel.app)  
+> - **Frontend URL**: [https://crm-erp-sigma.vercel.app](https://crm-erp-sigma.vercel.app)  
+> - **Backend API URL**: [https://crm-erp-iu6c.onrender.com](https://crm-erp-iu6c.onrender.com)  
 > - **Author**: Manav Patel  
 > - **Frontend**: React 19, TypeScript, Vite, Tailwind CSS v4, TanStack Query  
 > - **Backend**: Node.js, Express.js, TypeScript, Zod Validation, JWT Auth  
 > - **Database**: Prisma ORM v6 connected natively to MongoDB Atlas  
 > - **Security Model**: Role-Based Access Control (RBAC: Admin, Sales, Warehouse, Accounts)  
-> - **Deployment Spec**: Vercel Multi-Service Monorepo (`vercel.json`)  
+> - **Deployment Spec**: Vercel (Frontend) + Render (Backend)  
 
 ---
 
@@ -33,6 +35,7 @@ NexusERP is a unified full-stack Enterprise Resource Planning (ERP) and Customer
                                        v
 +-----------------------------------------------------------------------------+
 |                          Node.js + Express API                              |
+|          (Live Backend API: https://crm-erp-iu6c.onrender.com)              |
 |     +-------------------+   +-------------------+   +------------------+    |
 |     |  JWT Auth Guard   |-->|  Zod Validation   |-->| Rest Controllers |    |
 |     +-------------------+   +-------------------+   +------------------+    |
@@ -101,7 +104,7 @@ NexusERP is a unified full-stack Enterprise Resource Planning (ERP) and Customer
 
 ---
 
-## 🔌 API Reference Architecture
+## 🔌 API Reference Architecture (`https://crm-erp-iu6c.onrender.com`)
 
 ### Authentication (`/api/auth`)
 | Method | Endpoint | Description |
