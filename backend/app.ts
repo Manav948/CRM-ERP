@@ -1,11 +1,11 @@
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import authRoutes from './src/routes/authRoutes';
-import customerRoutes from './src/routes/customerRoutes';
-import productRoutes from './src/routes/productRoutes';
-import challanRoutes from './src/routes/challanRoutes';
-import { errorHandler } from './src/middleware/errorHandler';
+import authRoutes from './src/routes/authRoutes.js';
+import customerRoutes from './src/routes/customerRoutes.js';
+import productRoutes from './src/routes/productRoutes.js';
+import challanRoutes from './src/routes/challanRoutes.js';
+import { errorHandler } from './src/middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -19,6 +19,7 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+app.options('*', cors());
 
 app.use(express.json());
 
@@ -30,13 +31,13 @@ app.use('/api/challans', challanRoutes);
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({
     success: true,
-    message: 'API is running ',
+    message: 'Mini ERP + CRM API is running smoothly',
     timestamp: new Date().toISOString(),
   });
 });
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('server running');
+  res.send('Server running');
 });
 
 app.use((req: Request, res: Response) => {
